@@ -11,30 +11,30 @@ for($i=0;$i -lt $puzzleInput.count; $i++){
     $signalEight = (($signalPattern | Where-Object {$_.Length -eq 7}).ToCharArray() | Sort-Object) -join ""
     
     foreach($signal in $signalPattern){
+        $signalArray = ($signal.ToCharArray() | Sort-Object)
+        $signal = $signalArray -join ""
         if($signal.length -eq 6){
             # 0, 6 of 9
-            $signalArray = ($signal.ToCharArray() | Sort-Object)
             if(($signalArray | Where-Object { ($signalOne.ToCharArray()) -notcontains $_ }).Length -eq 5){
-                $signalSix = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalSix = $signal
             }
             elseif(($signalArray | Where-Object { ($signalFour.ToCharArray()) -notcontains $_ }).Length -eq 3){
-                $signalZero = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalZero = $signal
             }
             else{
-                $signalNine = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalNine = $signal
             }
         }
         if($signal.length -eq 5){
             # 2, 3, 5
-            $signalArray = ($signal.ToCharArray() | Sort-Object)
             if(($signalArray | Where-Object { ($signalOne.ToCharArray()) -notcontains $_ }).Length -eq 3){
-                $signalThree = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalThree = $signal
             }
             elseif(($signalArray | Where-Object { ($signalFour.ToCharArray()) -notcontains $_ }).Length -eq 3){
-                $signalTwo = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalTwo = $signal
             }
             else{
-                $signalFive = ($signal.ToCharArray() | Sort-Object) -join ""
+                $signalFive = $signal
             }
         }
     }
