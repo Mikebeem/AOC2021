@@ -6,18 +6,10 @@ for($i=0;$i -lt $puzzleInput.count; $i++){
     foreach($value in $outputValue){
         switch ($value.Length) {
             2 { $total++ }
-            4 { $total++}
-            3 { $total++} 
-            7 { $total++}
+            4 { $total++ }
+            3 { $total++ } 
+            7 { $total++ }
         }
     }
-    
 }
 write-host "Total = $total"
-<#
-$1 = 2
-$4 = 4
-$7 = 3
-$8 = 7
-
-#>
