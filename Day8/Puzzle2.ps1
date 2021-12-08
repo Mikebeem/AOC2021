@@ -1,7 +1,6 @@
 [string[]] $puzzleInput = Get-Content .\Day8\input.txt
 $total = 0
 
-
 for($i=0;$i -lt $puzzleInput.count; $i++){
     $signalPattern = $puzzleInput[$i].Replace(" | ","|").Split("|")[0].Split(" ") 
     $outputValue = $puzzleInput[$i].Replace(" | ","|").Split("|")[1].Split(" ") 
@@ -24,7 +23,6 @@ for($i=0;$i -lt $puzzleInput.count; $i++){
             else{
                 $signalNine = ($signal.ToCharArray() | Sort-Object) -join ""
             }
-            
         }
         if($signal.length -eq 5){
             # 2, 3, 5
@@ -59,12 +57,4 @@ for($i=0;$i -lt $puzzleInput.count; $i++){
     $total += $valueint 
 }
 
-
 write-host "Total = $total"
-<#
-$1 = 2
-$4 = 4
-$7 = 3
-$8 = 7
-
-#>
