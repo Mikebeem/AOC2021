@@ -1,5 +1,5 @@
 function createPacketString {
-    [string]$puzzleInput = Get-Content -Path .\input.txt
+    [string]$puzzleInput = Get-Content -Path .\Day16\input.txt
 
     $hexToBin = @{}
     $hexToBin["0"] = "0000"
@@ -39,21 +39,14 @@ function getPacketType ($packet){
 }
 
 function getNextPackage ($packet, $limit = $null){
-    #$packet = $packetstring
-    #$packet = "000000000000000001011000010001010110100010111000001000000000101111000110000010001101"
-    #$i = 22
-    #$subpacket = "00000010110"
-    #$packet=$subpacket
     $packets = @()
     $i=0
     while ($i -lt $packet.Length -or ($limit -and $limit -gt $packets.Count)) {
         if($packet.Length - $i -lt 10){
-            #write-host "This was left: $($packet.subString($i))"
             $i = $packet.Length
 
             break
         }
-        #write-host "i $i - length = $($packet.Length)"
         $packetObject = @{
             version =  $version
             typeId = $typeId
@@ -67,7 +60,6 @@ function getNextPackage ($packet, $limit = $null){
         if($packetObject.typeId -eq "4"){
             #literal value
             #$packet = '0001000101011010001011'
-            #write-host "2 findvalue - i: $i - packet length: $($packet.length) - Packet: '$($packet)'"
             $binValue = ""
             do {
                 $first = $packet.Substring($i,1)
@@ -76,8 +68,6 @@ function getNextPackage ($packet, $limit = $null){
                 $i += 4
             } while ($first -eq "1")
             $packetObject.value = [convert]::ToInt64($binValue,2)
-            #write-host "found  $binValue value $([convert]::ToInt64($binValue,2))"
-            #write-host "3 value: $($packetObject.value) - i: $i - packet length: $($packet.length) - Packet: '$($packet)'"
         } else {
             $SubPacketsLength = $numberOfSubPackages = 0
             $lengthTypeId = $packet.Substring($i,1)
@@ -85,10 +75,10 @@ function getNextPackage ($packet, $limit = $null){
             if($lengthTypeId -eq "0"){
                 $SubPacketsLength = [convert]::ToInt32($packet.Substring($i,15),2)
                 $i += 15
-                #write-host "4 Packet length: $($packet.length) - i: $i - SubPacketsLength: $SubPacketsLength "
+                $subPackets = @()
                 $subPackets += getNextPackage $packet.Substring($i,$SubPacketsLength)
                 $i += $SubPacketsLength
-            }S
+            }
             if($lengthTypeId -eq "1"){
                 #$subPackets = getSubPacketsByNumber $packet
                 $numberOfSubPackages = [convert]::ToInt32($packet.Substring($i,11),2)
@@ -103,7 +93,6 @@ function getNextPackage ($packet, $limit = $null){
         }
         $packets += $packetObject
         if($limit -and $limit -eq $packets.Count){
-            write-host "Reached limit"
             break
         }
         
@@ -126,17 +115,9 @@ function drillDown ($packet, $parentType){
         foreach($subPacket in $packet.subPackets){
             $values += drillDown $subPacket $packet.typeId
         }
-        $packet.typeId
-        if($packet.typeId -eq 1){
-            write-host "found $($values.Count) for $($packet.typeId), parent is $($parentType)"
-            foreach($value in $values){
-                write-host "        $value"
-            }
-        }
-        [double]$value = calcValue $values $packet.typeId
+        [int64]$value = calcValue $values $packet.typeId
         #write-host "value '$value' for type $($packet.typeId)"
         return $value
-        break
     }else{
         return $packet.value
     }
@@ -145,7 +126,7 @@ function drillDown ($packet, $parentType){
 function calcValue ($values, $typeId){
     switch ($typeId) {
         0 { 
-            [double]$totalValue = 0
+            [int64]$totalValue = 0
             foreach($sum in $values){
                 $sumValue += $sum
             }
@@ -153,12 +134,9 @@ function calcValue ($values, $typeId){
             return $totalValue
         }
         1 {
-            [double]$productValue = 1
+            [int64]$productValue = 1
             foreach($value in $values){
-                    $productValue *= $value
-            }
-            if([double]::MaxValue -lt $productValue){
-                write-host "kan dit?"
+                $productValue *= $value
             }
             return $productValue
         }
