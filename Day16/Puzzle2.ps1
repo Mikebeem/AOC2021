@@ -1,5 +1,5 @@
 function createPacketString {
-    [string]$puzzleInput = Get-Content -Path .\Day16\input.txt
+    [string]$puzzleInput = Get-Content -Path .\input.txt
 
     $hexToBin = @{}
     $hexToBin["0"] = "0000"
@@ -38,7 +38,7 @@ function getPacketType ($packet){
     return $typeId
 }
 
-function getNextPackage ($packet, $limit){
+function getNextPackage ($packet, $limit = $null){
     #$packet = $packetstring
     #$packet = "000000000000000001011000010001010110100010111000001000000000101111000110000010001101"
     #$i = 22
@@ -46,7 +46,7 @@ function getNextPackage ($packet, $limit){
     #$packet=$subpacket
     $packets = @()
     $i=0
-    while ($i -lt $packet.Length) {
+    while ($i -lt $packet.Length -or ($limit -and $limit -gt $packets.Count)) {
         if($packet.Length - $i -lt 10){
             #write-host "This was left: $($packet.subString($i))"
             $i = $packet.Length
@@ -88,7 +88,7 @@ function getNextPackage ($packet, $limit){
                 #write-host "4 Packet length: $($packet.length) - i: $i - SubPacketsLength: $SubPacketsLength "
                 $subPackets += getNextPackage $packet.Substring($i,$SubPacketsLength)
                 $i += $SubPacketsLength
-            }
+            }S
             if($lengthTypeId -eq "1"){
                 #$subPackets = getSubPacketsByNumber $packet
                 $numberOfSubPackages = [convert]::ToInt32($packet.Substring($i,11),2)
@@ -103,7 +103,7 @@ function getNextPackage ($packet, $limit){
         }
         $packets += $packetObject
         if($limit -and $limit -eq $packets.Count){
-            #write-host "Reached limit"
+            write-host "Reached limit"
             break
         }
         
@@ -117,8 +117,6 @@ function getNextPackage ($packet, $limit){
 
 $packetstring = createPacketString
 $packets = getNextPackage $packetstring
-#$packet = $packets.packets[0]
-#$packet = $packet.subPackets[1]
 # drillDown $packet
 function drillDown ($packet, $parentType){
     
@@ -138,6 +136,7 @@ function drillDown ($packet, $parentType){
         [double]$value = calcValue $values $packet.typeId
         #write-host "value '$value' for type $($packet.typeId)"
         return $value
+        break
     }else{
         return $packet.value
     }
