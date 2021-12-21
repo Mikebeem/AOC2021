@@ -30,8 +30,7 @@ function playDiracDice ($p1, $p1Score, $p2, $p2Score, $turn){
             for ($k = 1; $k -le 3; $k++) {
                 if($turn -eq 1){
                     $newPosition = $board[($p1 + $i + $j + $k -1) % 10]
-                    #Opnieuw aanroepen functie
-                    $wins = playDiracDice $newPosition ($p1Score + $newPosition) $p2 $p1Score 2
+                    $wins = playDiracDice $newPosition ($p1Score + $newPosition) $p2 $p2Score 2
                     $totalWins[0] += $wins[0]
                     $totalWins[1] += $wins[1]
                 }else{
@@ -47,9 +46,9 @@ function playDiracDice ($p1, $p1Score, $p2, $p2Score, $turn){
     return $totalWins
 }
 
-$p1 = 4
+$p1 = 5
 $p1Score = 0
-$p2 = 8
+$p2 = 10
 $p2Score = 0
 
 $maxScore = 21
